@@ -1,0 +1,7 @@
+resources:
+   - cms-deployment.yml
+   - cms-service.yml
+   - cms-ingress.yml
+   - cms-secret.yml
+namePrefix: dev-
+namespace: cms     

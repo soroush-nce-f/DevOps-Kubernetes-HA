@@ -1,0 +1,27 @@
+version: "2.4"
+services:
+      db:
+        image: repository.dotin.ir/oraclelinux:9
+        stdin_open: true # docker run -i
+        #tty: true        # docker run -t
+        #image: repository.dotin.ir/bitnami/oraclelinux-base-buildpack:7-r7
+        #image: repository.dotin.ir/kasmweb/core-oracle-7:1.11.0
+        #restart: "unless-stopped"
+        # privileged: true
+        # user: root
+        ports:
+          - 1521:1521
+          - 8080:8080
+          - 5500:5500
+          #- 50000:50000
+        environment:
+            - POSTGRES_USER=admin
+            - POSTGRES_PASSWORD=admin1234
+            - POSTGRES_DB=productDb
+        container_name: oracdb
+        hostname: oracle
+        
+      
+
+
+

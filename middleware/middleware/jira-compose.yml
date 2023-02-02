@@ -1,0 +1,20 @@
+version: "2.4"
+services:
+    jira:
+        image: repository.dotin.ir/atlassian/jira-software:latest
+        #stdin_open: true # docker run -i
+        #tty: true        # docker run -t
+        # environment:
+        ports: 
+            - "8080:8080"
+            - "8000:8000"
+        restart: always
+        container_name: jira
+        volumes: 
+            - ~/jiraVolume:/var/atlassian/application-data/jira
+volumes:
+    jiraVolume:
+
+
+
+

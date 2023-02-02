@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monitoring-grafana-pvc
+  namespace: monitoring
+  labels:
+    app: grafana-deployment
+spec:
+  storageClassName: managed-gluster
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: "monitoring-grafana-pv"

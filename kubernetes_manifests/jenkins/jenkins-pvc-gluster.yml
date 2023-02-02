@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: devops-jenkins-pvc
+  namespace: devops
+  labels:
+    app: jenkins-deployment
+spec:
+  storageClassName: managed-gluster
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: "devops-jenkins-pv"

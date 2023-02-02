@@ -1,0 +1,24 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: switch-role
+  namespace: switch
+rules:
+- apiGroups: ["apps", ""]
+  resources: ["pods", "deployments", "services"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: switch-switchuser
+  namespace: switch
+subjects:
+- kind: User
+  name: switchuser
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: switch-role
+  apiGroup: ""

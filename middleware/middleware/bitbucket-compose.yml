@@ -1,0 +1,20 @@
+version: "2.4"
+services:
+    bitbucket:
+        image: repository.dotin.ir/atlassian/bitbucket:latest
+        #stdin_open: true # docker run -i
+        #tty: true        # docker run -t
+        # environment:
+        ports: 
+            - "7990:7990"
+            - "7999:7999"
+        restart: always
+        container_name: bitbucket
+        volumes: 
+            - ~/bitbucketVolume:/var/atlassian/application-data/bitbucket
+volumes:
+    bitbucketVolume:
+
+
+
+

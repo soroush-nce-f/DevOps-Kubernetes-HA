@@ -1,0 +1,50 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monitoring-server-pvc
+  namespace: monitoring
+  labels:
+    app: server-deployment
+spec:
+  storageClassName: managed-gluster
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: "monitoring-server-pv"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monitoring-pushgateway-pvc
+  namespace: monitoring
+  labels:
+    app: pushgateway-deployment
+spec:
+  storageClassName: managed-gluster
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: "monitoring-pushgateway-pv"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monitoring-alertmanager-pvc
+  namespace: monitoring
+  labels:
+    app: alertmanager-deployment
+spec:
+  storageClassName: managed-gluster
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi 
+  volumeName: "monitoring-alertmanager-pv"     

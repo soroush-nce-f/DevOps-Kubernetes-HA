@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: zookeeper
+  name: zk-service
+  labels:
+    app: zn
+
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+      app: zn
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  namespace: zookeeper
+  name: zoonavigator
+  labels:
+    app: zn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zn
+  template:
+    metadata:
+      labels:
+        app: zn
+    spec:
+      containers:
+        - name: zn
+          image: docker.io/elkozmon/zoonavigator:latest
+          # ports:
+          #   - containerPort: 9000

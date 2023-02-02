@@ -1,0 +1,115 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: middleware
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus3
+  namespace: middleware
+  labels:
+    app: nexus3
+spec:
+  selector:
+    matchLabels:
+      app: nexus3
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      name: nexus3
+      labels:
+        app: nexus3
+    spec:
+      containers:
+      - name: nexus3
+        image: repository.dotin.ir/sonatype/nexus3:latest
+        ports:
+        - name: readiness-port
+          containerPort: 8081
+          hostPort: 8081
+        readinessProbe:
+          periodSeconds: 60
+          initialDelaySeconds: 60
+          httpGet:
+            path: /
+            port: readiness-port
+            scheme: HTTP
+        livenessProbe:
+          periodSeconds: 60
+          initialDelaySeconds: 60
+          httpGet:
+            path: /
+            port: readiness-port
+            scheme: HTTP
+        imagePullPolicy: Always
+        # resources:
+        #     requests:
+        #       memory: "5.5Gi"
+        #       cpu: "6000m"
+        #     limits:
+        #       memory: "5.5Gi"
+        #       cpu: "6000m"
+        #       ephemeral-storage: "500Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus3-svc
+  labels:
+    app: nexus3
+  namespace: middleware
+spec:
+  selector:
+    app: nexus3
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 8081
+    #nodePort: 30555
+  # sessionAffinity: ClientIP
+  # sessionAffinityConfig:
+  #   clientIP:
+  #     timeoutSeconds: 300
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: nexus3
+  name: nexus3
+  namespace: middleware
+  # annotations:
+  #   nginx.org/ssl-services: "nexus3-svc"
+  #   nginx.ingress.kubernetes.io/affinity: cookie
+  #   nginx.ingress.kubernetes.io/session-cookie-name: "JSESSIONID"
+  #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  #   nginx.ingress.kubernetes.io/affinity-mode: persistent
+  #   nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+  #   nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+  #   nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+spec:
+  ingressClassName: nginx
+  # tls:
+  # - hosts:
+  #     - fcbcms.bank.dotin.ir
+  #   secretName: tls-secret
+  rules:
+  - host: nexus.bank.dotin.ir
+    http:
+      paths:
+      - backend:
+          service:
+            name: nexus3-svc
+            port:
+              number: 8081
+        path: /
+        pathType: Prefix

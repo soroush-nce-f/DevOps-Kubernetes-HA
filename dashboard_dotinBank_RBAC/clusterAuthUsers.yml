@@ -1,0 +1,36 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: monitoring
+rules:
+- apiGroups:
+  - "*"
+  resources: ["deployments", "services", "pods", "replicasets", "events", "pods/log", "pods/exec", "namespaces"]
+  verbs: ["get", "list", "watch"]  # You can also use ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  creationTimestamp: null
+  name: monitoring-sso
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: monitoring
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:authenticated
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: switch-rolebind-sa
+  namespace: switch
+subjects:
+  - kind: ServiceAccount
+    name: switch
+    namespaces: ["switch", "cms", "sso"]
+    #apiGroup: ""

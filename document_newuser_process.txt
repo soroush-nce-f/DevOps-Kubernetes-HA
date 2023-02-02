@@ -1,0 +1,70 @@
+First step is to pick ca.crt and ca.key from master node and /etc/kubernetes/pki address and put it in a ~/.kube directory
+adduser <username>
+passwd <username>
+--------
+Second step is to create crt and key for new user
+openssl genrsa -out testuser.key 2048
+openssl req -new -key testuser.key -out testuser.csr -subj "/CN=testuser/O=usergroup"
+openssl x509 -req -in testuser.csr -CA ~/.kube/ca.crt -CAkey ~/.kube/ca.key  -CAcreateserial -out testuser.crt -days 1825
+
+sudo chown testuser:testuser -R /home/testuser/.kube/*
+
+kopr config set-credentials testuser --client-certificate ~/.kube/testuser.crt --client-key ~/.kube/testuser.key
+kopr config set-context testuser-context --cluster=kubernetes --namespace=test --user=testuser
+-----------------------------------------------------------------------
+next step is role and rolebinding for this user
+*****hint: ordinary users should not have access to role, rolebinding, resourcequota, secret, and service accounts in their namespace********
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: test-role
+  namespace: test
+rules:
+- apiGroups: ["apps", ""]
+  resources: ["pods", "deployments", "services"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: test-testuser
+  namespace: test
+subjects:
+- kind: User
+  name: testuser
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: test-role
+  apiGroup: ""
+--------------------------
+next step is set up resourceQuota for the created namespace  
+
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: objects
+  namespace: test
+spec:
+  hard:
+    pods: 3
+    replicationcontrollers: 3
+    #secrets: 10
+    #configmaps: 10
+    persistentvolumeclaims: 2
+    services: 2   
+    services.nodeports: 2
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-and-mem
+  namespace: test
+spec:
+  hard:
+    requests.cpu: "4000m"
+    requests.memory: "4Gi"
+    limits.cpu: "4000m"
+    limits.memory: "4Gi"         

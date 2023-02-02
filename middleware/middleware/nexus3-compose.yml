@@ -1,0 +1,19 @@
+version: "2.4"
+services:
+    nexus:
+        image: repository.dotin.ir/sonatype/nexus3:latest
+        #stdin_open: true # docker run -i
+        #tty: true        # docker run -t
+        # environment:
+        ports: 
+            - "8081:8081"
+        restart: always
+        container_name: nexus3
+        volumes: 
+            - ~/nexus3-data:/nexus-data/
+volumes:
+    nexus3-data:
+
+
+
+

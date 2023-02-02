@@ -1,0 +1,46 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: sso
+  name: service-reader
+rules:
+  - apiGroups: ["extensions", "apps", "batch", ""]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]  # You can also use ["*"]
+    resources: ["deployments", "services", "ingresses", "pods", "replicasets", "events", "pods/log", "pods/exec"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: sso-rolebind-sa
+  # The namespace of the RoleBinding determines where the permissions are granted.
+  # This only grants permissions within the "sso" namespace.
+  namespace: sso
+subjects:
+  - kind: ServiceAccount
+    name: sso
+    namespace: sso
+    #apiGroup: ""
+roleRef:
+  kind: Role
+  name: service-reader
+  apiGroup: rbac.authorization.k8s.io
+  
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: sso-rolebind-user
+  # The namespace of the RoleBinding determines where the permissions are granted.
+  # This only grants permissions within the "sso" namespace.
+  namespace: sso
+subjects:
+  - kind: User
+    name: ssouser
+    namespace: sso
+    #apiGroup: ""
+roleRef:
+  kind: Role
+  name: service-reader
+  apiGroup: rbac.authorization.k8s.io

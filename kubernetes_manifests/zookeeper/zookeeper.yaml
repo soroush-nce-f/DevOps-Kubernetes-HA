@@ -1,0 +1,80 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zookeeper
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zk-cm-start
+  namespace: zookeeper
+data:
+  start.sh: |
+    #!/bin/sh
+    mkdir -p /var/lib/zookeeper/
+    chmod 777 /var/lib/zookeeper/
+
+    /usr/bin/start-zookeeper \
+          --servers=3 \
+          --data_dir=/var/lib/zookeeper/data \
+          --data_log_dir=/var/lib/zookeeper/data/log \
+          --conf_dir=/opt/zookeeper/conf \
+          --client_port=2181 \
+          --election_port=3888 \
+          --server_port=2888 \
+          --tick_time=2000 \
+          --init_limit=10 \
+          --sync_limit=5 \
+          --heap=512M \
+          --max_client_cnxns=60 \
+          --snap_retain_count=3 \
+          --purge_interval=12 \
+          --max_session_timeout=40000 \
+          --min_session_timeout=4000 \
+          --log_level=INFO
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-hs
+  namespace: zookeeper
+  labels:
+    app: zk
+spec:
+  ports:
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: zk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  namespace: zookeeper
+  labels:
+    app: zk
+spec:
+  clusterIP: None
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    app: zk
+    app: zn
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: zk-pdb
+  namespace: zookeeper
+spec:
+  selector:
+    matchLabels:
+      app: zk
+  maxUnavailable: 1

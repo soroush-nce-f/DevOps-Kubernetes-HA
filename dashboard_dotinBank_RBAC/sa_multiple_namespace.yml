@@ -1,0 +1,78 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: esteghrar-f-mahdikhani
+  namespace: rbac-service-accounts
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  #creationTimestamp: null
+  name: monitoring-team-mahdikhani
+rules:
+- apiGroups: ["extensions", "apps", "batch", "*", " "]
+  resources: ["services", "pods", "events", "pods/log", "pods/exec"]
+  verbs: ["get", "list", "watch", "create"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: servicaccuant-f-mahdikhani
+  namespace: switch
+subjects:
+  - kind: ServiceAccount
+    name: esteghrar-f-mahdikhani
+    namespace: rbac-service-accounts
+roleRef:
+  kind: ClusterRole
+  name: monitoring-team-mahdikhani
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: servicaccuant-f-mahdikhani
+  namespace: sso
+subjects:
+  - kind: ServiceAccount
+    name: esteghrar-f-mahdikhani
+    namespace: rbac-service-accounts
+roleRef:
+  kind: ClusterRole
+  name: monitoring-team-mahdikhani
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: servicaccuant-f-mahdikhani
+  namespace: cms
+subjects:
+  - kind: ServiceAccount
+    name: esteghrar-f-mahdikhani
+    namespace: rbac-service-accounts
+roleRef:
+  kind: ClusterRole
+  name: monitoring-team-mahdikhani
+  apiGroup: rbac.authorization.k8s.io
+
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: servicaccuant-f-mahdikhani
+  namespace: bcp
+subjects:
+  - kind: ServiceAccount
+    name: esteghrar-f-mahdikhani
+    namespace: rbac-service-accounts
+roleRef:
+  kind: ClusterRole
+  name: monitoring-team-mahdikhani
+  apiGroup: rbac.authorization.k8s.io

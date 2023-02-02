@@ -1,0 +1,88 @@
+
+How to ask for input in shell script from terminal?
+
+**First and simple example**
+
+First we need to write our script, in order to do this, we can open a terminal, then use this code to open vscode
+touch [File name].sh
+ ls
+ code .
+
+### script###
+
+	#!/bin/bash
+	# Ask the user for their name
+	echo Hello, who am I talking to?
+	read varname
+	echo It's nice to meet you $varname
+###########
+
+in the next step open a terminal in vscode and just remember that we should be in the same directory which script is located
+
+## run the script
+
+bash [file name].sh
+
+
+the desired output will be something like below
+
+Hello, who am I talking to?
+Ryan
+It's nice to meet you Ryan
+
+
+--------------------
+You are able to alter the behaviour of read with a variety of command line options. (See the man page for read to see all of them.) Two commonly used options however are -p which allows you to specify a prompt message and -s which makes the input silent. This can make it easy to ask for a username and password combination like the example below:
+
+Second example/ login
+
+	#!/bin/bash
+	# Ask the user for login details
+	read -p 'Username: ' uservar
+	read -sp 'Password: ' passvar
+	echo
+	echo Thankyou $uservar we now have your login details
+
+
+#### run ###
+bash login.sh
+
+output
+Username: soroush
+Password: 
+Thankyou soroush we now have your login details
+
+
+
+third example/ car
+	#!/bin/bash
+	# Demonstrate how read actually works
+	echo What cars do you like?
+	read car1 car2 car3
+	echo Your first car was: $car1
+	echo Your second car was: $car2
+	echo Your third car was: $car3
+
+DOTIN\so.novin@novin159:~$ bash car.sh
+What cars do you like?
+prado Bimmerm4 MercedesS500
+Your first car was: prado
+Your second car was: Bimmerm4
+Your third car was: Mercedess500
+DOTIN\so.novin@novin159:~$ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

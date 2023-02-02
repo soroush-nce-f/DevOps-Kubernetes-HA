@@ -1,0 +1,29 @@
+#---
+#apiVersion: v1
+#kind: ResourceQuota
+#metadata:
+#name: objects
+#namespace: esb
+#spec:
+#hard:
+    #deployments.apps: 1
+    #pods: 3
+    #replicationcontrollers: 3
+    #secrets: 10
+    #configmaps: 10
+    #persistentvolumeclaims: 2
+    #   services: 4  
+    #  services.nodeports: 4
+    #ssd.storageclass.storage.k8s.io/persistentvolumeclaims: 2
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-and-mem
+  namespace: esb
+spec:
+  hard:
+    requests.cpu: "15000m"
+    requests.memory: "15Gi"
+    limits.cpu: "15000m"
+    limits.memory: "15Gi"

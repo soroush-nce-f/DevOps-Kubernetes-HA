@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glusterfs-cluster
+  namespace: redis-cluster
+spec:
+  ports:
+  - port: 1
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: glusterfs-cluster
+  namespace: redis-cluster
+subsets:
+  - addresses:
+      - ip: 10.100.8.142
+      - ip: 10.100.8.143
+      - ip: 10.100.8.163
+    ports:
+      - port: 1
+
+
+  
